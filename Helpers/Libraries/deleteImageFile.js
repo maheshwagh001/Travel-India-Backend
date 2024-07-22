@@ -15,7 +15,7 @@ cloudinary.config({
 }); 
 
 const deleteImage = async (public_id) => {
-      cloudinary.uploader.destroy(public_id)
+      await cloudinary.uploader.destroy(public_id)
         .then(resp => console.log(resp))
         .catch(_err=> console.log("Something went wrong, please try again later."));
 }
