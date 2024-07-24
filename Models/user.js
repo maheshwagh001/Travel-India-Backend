@@ -85,20 +85,6 @@ UserSchema.methods.generateJwtFromUser  = function(){
     return token 
 }
 
-UserSchema.methods.getResetPasswordTokenFromUser =function(){
-
-    const { RESET_PASSWORD_EXPIRE } = process.env
-
-    const randomHexString = crypto.randomBytes(20).toString("hex")
-
-    const resetPasswordToken = crypto.createHash("SHA256").update(randomHexString).digest("hex")
-
-    this.resetPasswordToken = resetPasswordToken
-    
-    this.resetPasswordExpire =Date.now()+ parseInt(RESET_PASSWORD_EXPIRE)
-
-    return resetPasswordToken
-}
 
 
 const User = mongoose.model("User",UserSchema)

@@ -111,9 +111,34 @@ const getCommentLikeStatus = asyncErrorWrapper(async(req, res, next) => {
 
 })
 
+
+const deleteComment  =asyncErrorWrapper(async(req,res,next)=>{
+
+    const {comment_id} = req.params  ;
+
+    const comment = await Comment.findById(comment_id);
+
+    const story = await Story.findById(comment.story);
+
+    const index = story.comments.indexOf(comment_id);
+    story.comments.splice(index, 1);
+    story.commentCount = story.comments.length;
+    await story.save()  ;
+    await Comment.findByIdAndDelete(comment_id);
+
+
+    return res.status(200).
+        json({
+            success:true,
+            message : "Story delete succesfully "
+    })
+
+})
+
 module.exports ={
     addNewCommentToStory,
     getAllCommentByStory,
     commentLike,
-    getCommentLikeStatus
+    getCommentLikeStatus,
+    deleteComment
 }

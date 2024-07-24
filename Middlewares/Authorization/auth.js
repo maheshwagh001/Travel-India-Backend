@@ -7,10 +7,6 @@ const { isTokenIncluded ,getAccessTokenFromHeader} = require("../../Helpers/auth
 
 const getAccessToRoute = asyncErrorWrapper(async(req,res,next) =>{
 
-    // if(req.user.role == "admin"){
-    //     next();
-    // }
-
     const {JWT_SECRET_KEY} =process.env ;
 
     if(!isTokenIncluded(req)) {

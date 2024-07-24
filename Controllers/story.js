@@ -160,10 +160,11 @@ const editStory = asyncErrorWrapper(async(req,res,next)=>{
     story.image = previousImage ;
 
     // await deleteImageFile.deleteImage(previousImage);
-    if(req.file != null){
-        await deleteImageFile.deleteImage(previousImage);
+    if(req.file != null){   
         const upload = await imageUpload.uploadFile(req.file.path);
-        story.image = upload.secure_url
+        story.image = upload.secure_url;
+        await deleteImageFile.deleteImage(previousImage);
+        
     }
 
     await story.save();

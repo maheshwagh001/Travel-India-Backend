@@ -1,6 +1,7 @@
 const asyncErrorWrapper = require("express-async-handler")
 const CustomError = require("../../Helpers/error/CustomError");
 const Story = require("../../Models/story")
+const Comment = require("../../Models/comment")
 
 
 const checkStoryExist = asyncErrorWrapper(async (req,res,next) => {
@@ -23,6 +24,10 @@ const checkUserAndStoryExist = asyncErrorWrapper(async(req, res, next) => {
 
     const {slug} =req.params 
 
+    if(req.user.role === "admin"){
+        return next();
+    }
+
     const story = await Story.findOne({
         slug : slug ,
         author :req.user 
@@ -36,7 +41,42 @@ const checkUserAndStoryExist = asyncErrorWrapper(async(req, res, next) => {
 
 })
 
+const checkCommentExist = asyncErrorWrapper(async (req,res,next) => {
+  
+    const {comment_id} = req.params  ;
+    const comment = await Comment.findById(comment_id)
+
+    if(!comment) {
+        return next(new CustomError("There is no such comment exist ",400))
+    }
+    
+    next() ; 
+
+})
+
+const checkUserAndCommentExist = asyncErrorWrapper(async(req, res, next) => {
+
+    const {comment_id} = req.params;
+
+    if(req.user.role === "admin"){
+        return next();
+    }
+    const comment = await Comment.findOne({
+        _id : comment_id,
+        author : req.user._id
+    })
+
+    if (!comment) {
+        return next(new CustomError("There is no comment associated with User ",400))
+    }
+
+    next() ; 
+
+})
+
 module.exports ={
     checkStoryExist,
-    checkUserAndStoryExist
+    checkUserAndStoryExist,
+    checkCommentExist,
+    checkUserAndCommentExist
 }
